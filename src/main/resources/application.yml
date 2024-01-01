@@ -1,0 +1,10 @@
+server:
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: api-backend
+  # 默认 dev 环境
+  profiles:
+    active: dev

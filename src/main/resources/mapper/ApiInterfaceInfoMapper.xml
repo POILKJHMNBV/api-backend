@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhenwu.api.mapper.ApiInterfaceInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.zhenwu.api.model.entity.ApiInterfaceInfo">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="interfaceName" column="interface_name" jdbcType="VARCHAR"/>
+            <result property="interfaceDescription" column="interface_description" jdbcType="VARCHAR"/>
+            <result property="interfaceUrl" column="interface_url" jdbcType="VARCHAR"/>
+            <result property="interfaceRequestParams" column="interface_request_params" jdbcType="VARCHAR"/>
+            <result property="interfaceRequestHeader" column="interface_request_header" jdbcType="VARCHAR"/>
+            <result property="interfaceResponseHeader" column="interface_response_header" jdbcType="VARCHAR"/>
+            <result property="interfaceStatus" column="interface_status" jdbcType="TINYINT"/>
+            <result property="interfaceRequestMethod" column="interface_request_method" jdbcType="VARCHAR"/>
+            <result property="interfacePublishUserid" column="interface_publish_userId" jdbcType="BIGINT"/>
+            <result property="interfaceDelete" column="interface_delete" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,interface_name,interface_description,
+        interface_url,interface_request_params,interface_request_header,
+        interface_response_header,interface_status,interface_request_method,
+        interface_publish_userId,interface_delete,create_time,
+        update_time
+    </sql>
+</mapper>
