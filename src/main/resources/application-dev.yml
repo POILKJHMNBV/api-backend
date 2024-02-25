@@ -1,7 +1,9 @@
 server:
-  port: 8101
+  port: 8081
 
 spring:
+  application:
+    name: api-backend
   # 数据库配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -24,9 +26,27 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
-#MybatisPlus配置
+# MybatisPlus配置
 mybatis-plus:
   type-aliases-package: com.zhenwu.api.model.entity
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
+
+# dubbo配置
+dubbo:
+  application:
+    name: dubbo-springboot-provider
+  protocol:
+    name: tri
+    port: 50052
+  registry:
+    address: zookeeper://192.168.5.137:2181
+    timeout: 60000
+    parameters:
+      blockUntilConnectedWait: 250
+
+api:
+  client:
+    accessKey: 2144523
+    secretKey: 3242525

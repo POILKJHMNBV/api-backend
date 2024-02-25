@@ -9,20 +9,44 @@
             <result property="userAccount" column="user_account" jdbcType="VARCHAR"/>
             <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
             <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+            <result property="userEmail" column="user_email" jdbcType="VARCHAR"/>
+            <result property="userPhone" column="user_phone" jdbcType="VARCHAR"/>
             <result property="userAvatar" column="user_avatar" jdbcType="VARCHAR"/>
             <result property="userProfile" column="user_profile" jdbcType="VARCHAR"/>
-            <result property="userRole" column="user_role" jdbcType="VARCHAR"/>
+            <result property="userRole" column="user_role" jdbcType="TINYINT"/>
             <result property="userStatus" column="user_status" jdbcType="TINYINT"/>
             <result property="userAccesskey" column="user_accessKey" jdbcType="VARCHAR"/>
             <result property="userSecretkey" column="user_secretKey" jdbcType="VARCHAR"/>
+            <result property="userPublickey" column="user_publicKey" jdbcType="VARCHAR"/>
+            <result property="userPrivatekey" column="user_privateKey" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,user_account,user_password,
-        user_name,user_avatar,user_profile,
-        user_role,user_status,user_accessKey,
-        user_secretKey,create_time,update_time
+        user_name,user_email,user_phone,
+        user_avatar,user_profile,user_role,
+        user_status,user_accessKey,user_secretKey,
+        user_publicKey,user_privateKey,create_time,
+        update_time
     </sql>
+    
+    <select id="userLogin" parameterType="hashmap" resultType="com.zhenwu.api.model.vo.LoginUserVO">
+        select id,
+               user_account,
+               user_name,
+               user_email,
+               user_phone,
+               user_avatar,
+               user_profile,
+               IF(user_role = '0', 'user', 'admin') AS user_role,
+               user_accessKey,
+               user_secretKey,
+               user_publicKey
+        from api_user
+        where
+            user_account = #{userAccount}
+            and user_password = #{userPassword}
+    </select>
 </mapper>

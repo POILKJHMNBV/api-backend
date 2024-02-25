@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -42,5 +43,12 @@ public class UserController {
     @Operation(summary = "加载登录用户信息")
     public Result<LoginUserVO> loadUserInfo() {
         return Result.success(UserHolder.getUser());
+    }
+
+    @GetMapping("/logout")
+    @Operation(summary = "退出登录")
+    public Result<?> logout(HttpServletRequest request) {
+        this.apiUserService.logout(request.getHeader("Authorization"));
+        return Result.success();
     }
 }

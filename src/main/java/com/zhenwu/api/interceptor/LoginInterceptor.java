@@ -17,11 +17,19 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if ("OPTIONS".equals(request.getMethod())) {
+            return true;
+        }
         LoginUserVO loginUser = UserHolder.getUser();
         if (loginUser == null) {
             // 用户未登录
             throw new BasicException(ErrorCode.NOT_LOGIN_ERROR);
         }
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        UserHolder.removeUser();
     }
 }

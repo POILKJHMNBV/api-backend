@@ -2,7 +2,6 @@ package com.zhenwu.api.service;
 
 import com.zhenwu.api.model.entity.ApiUser;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhenwu.api.model.vo.LoginUserVO;
 
 /**
 * @author zhenwu
@@ -26,4 +25,10 @@ public interface ApiUserService extends IService<ApiUser> {
      * @return token
      */
     String userLogin(String userAccount, String userPassword);
+
+    /**
+     * 退出登录
+     * @param token 用户登录token
+     */
+    void logout(String token);
 }

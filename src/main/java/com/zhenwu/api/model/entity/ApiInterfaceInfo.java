@@ -17,12 +17,17 @@ import lombok.Data;
 public class ApiInterfaceInfo implements Serializable {
 
     @TableField(exist = false)
-    private static final long serialVersionUID = -5902907296904580183L;
+    private static final long serialVersionUID = 1191942173239014400L;
     /**
      * 主键
      */
     @TableId(type = IdType.AUTO)
     private Long id;
+
+    /**
+     * 接口token
+     */
+    private String interfaceToken;
 
     /**
      * 接口名称
@@ -35,9 +40,34 @@ public class ApiInterfaceInfo implements Serializable {
     private String interfaceDescription;
 
     /**
-     * 接口地址
+     * 接口提供系统
      */
-    private String interfaceUrl;
+    private String interfaceVendor;
+
+    /**
+     * 接口提供系统名
+     */
+    private String interfaceVendorName;
+
+    /**
+     * 访问主机
+     */
+    private String interfaceHost;
+
+    /**
+     * 访问路径
+     */
+    private String interfacePath;
+
+    /**
+     * 接口请求参数MIME类型
+     */
+    private String interfaceRequestParamsMime;
+
+    /**
+     * 接口请求参数编码格式
+     */
+    private String interfaceRequestParamsCharset;
 
     /**
      * 接口请求参数
@@ -70,7 +100,7 @@ public class ApiInterfaceInfo implements Serializable {
     private Long interfacePublishUserid;
 
     /**
-     * 接口是否删除(0-未删, 1-已删)
+     * 接口是否删除(0-已删, 1-未删)
      */
     private Integer interfaceDelete;
 
@@ -97,9 +127,15 @@ public class ApiInterfaceInfo implements Serializable {
         }
         ApiInterfaceInfo other = (ApiInterfaceInfo) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
+            && (this.getInterfaceToken() == null ? other.getInterfaceToken() == null : this.getInterfaceToken().equals(other.getInterfaceToken()))
             && (this.getInterfaceName() == null ? other.getInterfaceName() == null : this.getInterfaceName().equals(other.getInterfaceName()))
             && (this.getInterfaceDescription() == null ? other.getInterfaceDescription() == null : this.getInterfaceDescription().equals(other.getInterfaceDescription()))
-            && (this.getInterfaceUrl() == null ? other.getInterfaceUrl() == null : this.getInterfaceUrl().equals(other.getInterfaceUrl()))
+            && (this.getInterfaceVendor() == null ? other.getInterfaceVendor() == null : this.getInterfaceVendor().equals(other.getInterfaceVendor()))
+            && (this.getInterfaceVendorName() == null ? other.getInterfaceVendorName() == null : this.getInterfaceVendorName().equals(other.getInterfaceVendorName()))
+            && (this.getInterfaceHost() == null ? other.getInterfaceHost() == null : this.getInterfaceHost().equals(other.getInterfaceHost()))
+            && (this.getInterfacePath() == null ? other.getInterfacePath() == null : this.getInterfacePath().equals(other.getInterfacePath()))
+            && (this.getInterfaceRequestParamsMime() == null ? other.getInterfaceRequestParamsMime() == null : this.getInterfaceRequestParamsMime().equals(other.getInterfaceRequestParamsMime()))
+            && (this.getInterfaceRequestParamsCharset() == null ? other.getInterfaceRequestParamsCharset() == null : this.getInterfaceRequestParamsCharset().equals(other.getInterfaceRequestParamsCharset()))
             && (this.getInterfaceRequestParams() == null ? other.getInterfaceRequestParams() == null : this.getInterfaceRequestParams().equals(other.getInterfaceRequestParams()))
             && (this.getInterfaceRequestHeader() == null ? other.getInterfaceRequestHeader() == null : this.getInterfaceRequestHeader().equals(other.getInterfaceRequestHeader()))
             && (this.getInterfaceResponseHeader() == null ? other.getInterfaceResponseHeader() == null : this.getInterfaceResponseHeader().equals(other.getInterfaceResponseHeader()))
@@ -116,9 +152,15 @@ public class ApiInterfaceInfo implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
+        result = prime * result + ((getInterfaceToken() == null) ? 0 : getInterfaceToken().hashCode());
         result = prime * result + ((getInterfaceName() == null) ? 0 : getInterfaceName().hashCode());
         result = prime * result + ((getInterfaceDescription() == null) ? 0 : getInterfaceDescription().hashCode());
-        result = prime * result + ((getInterfaceUrl() == null) ? 0 : getInterfaceUrl().hashCode());
+        result = prime * result + ((getInterfaceVendor() == null) ? 0 : getInterfaceVendor().hashCode());
+        result = prime * result + ((getInterfaceVendorName() == null) ? 0 : getInterfaceVendorName().hashCode());
+        result = prime * result + ((getInterfaceHost() == null) ? 0 : getInterfaceHost().hashCode());
+        result = prime * result + ((getInterfacePath() == null) ? 0 : getInterfacePath().hashCode());
+        result = prime * result + ((getInterfaceRequestParamsMime() == null) ? 0 : getInterfaceRequestParamsMime().hashCode());
+        result = prime * result + ((getInterfaceRequestParamsCharset() == null) ? 0 : getInterfaceRequestParamsCharset().hashCode());
         result = prime * result + ((getInterfaceRequestParams() == null) ? 0 : getInterfaceRequestParams().hashCode());
         result = prime * result + ((getInterfaceRequestHeader() == null) ? 0 : getInterfaceRequestHeader().hashCode());
         result = prime * result + ((getInterfaceResponseHeader() == null) ? 0 : getInterfaceResponseHeader().hashCode());
@@ -138,9 +180,15 @@ public class ApiInterfaceInfo implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", interfaceToken=").append(interfaceToken);
         sb.append(", interfaceName=").append(interfaceName);
         sb.append(", interfaceDescription=").append(interfaceDescription);
-        sb.append(", interfaceUrl=").append(interfaceUrl);
+        sb.append(", interfaceVendor=").append(interfaceVendor);
+        sb.append(", interfaceVendorName=").append(interfaceVendorName);
+        sb.append(", interfaceHost=").append(interfaceHost);
+        sb.append(", interfacePath=").append(interfacePath);
+        sb.append(", interfaceRequestParamsMime=").append(interfaceRequestParamsMime);
+        sb.append(", interfaceRequestParamsCharset=").append(interfaceRequestParamsCharset);
         sb.append(", interfaceRequestParams=").append(interfaceRequestParams);
         sb.append(", interfaceRequestHeader=").append(interfaceRequestHeader);
         sb.append(", interfaceResponseHeader=").append(interfaceResponseHeader);

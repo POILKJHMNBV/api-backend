@@ -8,3 +8,5 @@ spring:
   # 默认 dev 环境
   profiles:
     active: dev
+  jackson:
+    default-property-inclusion: non_null  # JSON处理时忽略空字段

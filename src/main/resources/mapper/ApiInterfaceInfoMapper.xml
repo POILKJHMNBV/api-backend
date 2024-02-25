@@ -6,9 +6,15 @@
 
     <resultMap id="BaseResultMap" type="com.zhenwu.api.model.entity.ApiInterfaceInfo">
             <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="interfaceToken" column="interface_token" jdbcType="CHAR"/>
             <result property="interfaceName" column="interface_name" jdbcType="VARCHAR"/>
             <result property="interfaceDescription" column="interface_description" jdbcType="VARCHAR"/>
-            <result property="interfaceUrl" column="interface_url" jdbcType="VARCHAR"/>
+            <result property="interfaceVendor" column="interface_vendor" jdbcType="VARCHAR"/>
+            <result property="interfaceVendorName" column="interface_vendor_name" jdbcType="VARCHAR"/>
+            <result property="interfaceHost" column="interface_host" jdbcType="VARCHAR"/>
+            <result property="interfacePath" column="interface_path" jdbcType="VARCHAR"/>
+            <result property="interfaceRequestParamsMime" column="interface_request_params_mime" jdbcType="VARCHAR"/>
+            <result property="interfaceRequestParamsCharset" column="interface_request_params_charset" jdbcType="VARCHAR"/>
             <result property="interfaceRequestParams" column="interface_request_params" jdbcType="VARCHAR"/>
             <result property="interfaceRequestHeader" column="interface_request_header" jdbcType="VARCHAR"/>
             <result property="interfaceResponseHeader" column="interface_response_header" jdbcType="VARCHAR"/>
@@ -21,10 +27,20 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,interface_name,interface_description,
-        interface_url,interface_request_params,interface_request_header,
+        id,interface_token,interface_name,
+        interface_description,interface_vendor,interface_vendor_name,
+        interface_host,interface_path,interface_request_params_mime,
+        interface_request_params_charset,interface_request_params,interface_request_header,
         interface_response_header,interface_status,interface_request_method,
         interface_publish_userId,interface_delete,create_time,
         update_time
     </sql>
+
+    <select id="queryRouteInfo" resultType="java.util.Map">
+        select
+            interface_host AS host,
+            GROUP_CONCAT(interface_path separator ',') AS paths
+        from api_interface_info
+        group by interface_host
+    </select>
 </mapper>

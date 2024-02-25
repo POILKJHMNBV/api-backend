@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.zhenwu.api.constant.RedisConstants.LOGIN_USER_KEY;
-import static com.zhenwu.api.constant.RedisConstants.LOGIN_USER_TTL;
+import static com.zhenwu.api.constant.RedisConstants.*;
 
 /**
  * @author zhenwu
@@ -29,6 +28,9 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if ("OPTIONS".equals(request.getMethod())) {
+            return true;
+        }
         // 1.获取token
         String token = request.getHeader("Authorization");
 
@@ -45,12 +47,19 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        // 3.获取用户信息，将用户信息存入UserHolder
+        // 3.用户重复登录，删除原有token, 重新生成token
+        if ("/api/user/login".equals(request.getRequestURI())) {
+            this.stringRedisTemplate.delete(key);
+            return true;
+        }
+
+        // 4.获取用户信息，将用户信息存入UserHolder
         LoginUserVO loginUser = JSONUtil.toBean(userStr, LoginUserVO.class);
         UserHolder.saveUser(loginUser);
 
-        // 4.刷新token
+        // 5.刷新token
         this.stringRedisTemplate.expire(key, LOGIN_USER_TTL, TimeUnit.SECONDS);
+        this.stringRedisTemplate.expire(LOGIN_USER_ACCOUNT + loginUser.getUserAccount(), LOGIN_USER_TTL, TimeUnit.SECONDS);
         return true;
     }
 }
