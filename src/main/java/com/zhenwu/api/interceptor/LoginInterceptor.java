@@ -23,7 +23,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         LoginUserVO loginUser = UserHolder.getUser();
         if (loginUser == null) {
             // 用户未登录
-            throw new BasicException(ErrorCode.NOT_LOGIN_ERROR);
+            throw new BasicException(ErrorCode.UNAUTHORIZED);
         }
         return true;
     }

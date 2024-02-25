@@ -19,6 +19,8 @@
             <result property="userSecretkey" column="user_secretKey" jdbcType="VARCHAR"/>
             <result property="userPublickey" column="user_publicKey" jdbcType="VARCHAR"/>
             <result property="userPrivatekey" column="user_privateKey" jdbcType="VARCHAR"/>
+            <result property="userLoginIp" column="user_login_ip" jdbcType="VARCHAR"/>
+            <result property="userLoginTime" column="user_login_time" jdbcType="TIMESTAMP"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -28,8 +30,8 @@
         user_name,user_email,user_phone,
         user_avatar,user_profile,user_role,
         user_status,user_accessKey,user_secretKey,
-        user_publicKey,user_privateKey,create_time,
-        update_time
+        user_publicKey,user_privateKey,user_login_ip,
+        user_login_time,create_time,update_time
     </sql>
     
     <select id="userLogin" parameterType="hashmap" resultType="com.zhenwu.api.model.vo.LoginUserVO">

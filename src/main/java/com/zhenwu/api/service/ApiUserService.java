@@ -22,9 +22,10 @@ public interface ApiUserService extends IService<ApiUser> {
      * 用户登录
      * @param userAccount   用户账户
      * @param userPassword  用户密码
+     * @param userLoginIp 用户登录ip
      * @return token
      */
-    String userLogin(String userAccount, String userPassword);
+    String userLogin(String userAccount, String userPassword, String userLoginIp);
 
     /**
      * 退出登录

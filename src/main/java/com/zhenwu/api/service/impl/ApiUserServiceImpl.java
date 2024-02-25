@@ -104,7 +104,7 @@ public class ApiUserServiceImpl extends ServiceImpl<ApiUserMapper, ApiUser>
     }
 
     @Override
-    public String userLogin(String userAccount, String userPassword) {
+    public String userLogin(String userAccount, String userPassword, String userLoginIp) {
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userAccount + userPassword).getBytes());
         Map<String, String> paramMap = new HashMap<>(2);
         paramMap.put("userAccount", userAccount);
@@ -113,6 +113,15 @@ public class ApiUserServiceImpl extends ServiceImpl<ApiUserMapper, ApiUser>
         if (loginUser == null) {
             log.info("user login failed, userAccount cannot match userPassword");
             throw new BasicException(ErrorCode.PARAMS_ERROR, "用户名或密码错误");
+        }
+
+        boolean updateResult = this.update()
+                .eq("id", loginUser.getId())
+                .set("user_login_ip", userLoginIp)
+                .setSql("user_login_time = NOW()")
+                .update();
+        if (!updateResult) {
+            throw new BasicException(ErrorCode.SYSTEM_ERROR, "登录失败");
         }
 
         String key = LOGIN_USER_ACCOUNT + userAccount;

@@ -90,6 +90,16 @@ public class ApiUser implements Serializable {
     private String userPrivatekey;
 
     /**
+     * 用户登录ip
+     */
+    private String userLoginIp;
+
+    /**
+     * 用户登录时间
+     */
+    private Date userLoginTime;
+
+    /**
      * 创建时间
      */
     private Date createTime;
@@ -99,57 +109,53 @@ public class ApiUser implements Serializable {
      */
     private Date updateTime;
 
-
     @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        ApiUser other = (ApiUser) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getUserAccount() == null ? other.getUserAccount() == null : this.getUserAccount().equals(other.getUserAccount()))
-            && (this.getUserPassword() == null ? other.getUserPassword() == null : this.getUserPassword().equals(other.getUserPassword()))
-            && (this.getUserName() == null ? other.getUserName() == null : this.getUserName().equals(other.getUserName()))
-            && (this.getUserEmail() == null ? other.getUserEmail() == null : this.getUserEmail().equals(other.getUserEmail()))
-            && (this.getUserPhone() == null ? other.getUserPhone() == null : this.getUserPhone().equals(other.getUserPhone()))
-            && (this.getUserAvatar() == null ? other.getUserAvatar() == null : this.getUserAvatar().equals(other.getUserAvatar()))
-            && (this.getUserProfile() == null ? other.getUserProfile() == null : this.getUserProfile().equals(other.getUserProfile()))
-            && (this.getUserRole() == null ? other.getUserRole() == null : this.getUserRole().equals(other.getUserRole()))
-            && (this.getUserStatus() == null ? other.getUserStatus() == null : this.getUserStatus().equals(other.getUserStatus()))
-            && (this.getUserAccesskey() == null ? other.getUserAccesskey() == null : this.getUserAccesskey().equals(other.getUserAccesskey()))
-            && (this.getUserSecretkey() == null ? other.getUserSecretkey() == null : this.getUserSecretkey().equals(other.getUserSecretkey()))
-            && (this.getUserPublickey() == null ? other.getUserPublickey() == null : this.getUserPublickey().equals(other.getUserPublickey()))
-            && (this.getUserPrivatekey() == null ? other.getUserPrivatekey() == null : this.getUserPrivatekey().equals(other.getUserPrivatekey()))
-            && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
-            && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ApiUser apiUser = (ApiUser) o;
+
+        if (!id.equals(apiUser.id)) return false;
+        if (!userAccount.equals(apiUser.userAccount)) return false;
+        if (!userPassword.equals(apiUser.userPassword)) return false;
+        if (!userName.equals(apiUser.userName)) return false;
+        if (!userEmail.equals(apiUser.userEmail)) return false;
+        if (!userPhone.equals(apiUser.userPhone)) return false;
+        if (!userAvatar.equals(apiUser.userAvatar)) return false;
+        if (!userProfile.equals(apiUser.userProfile)) return false;
+        if (!userRole.equals(apiUser.userRole)) return false;
+        if (!userStatus.equals(apiUser.userStatus)) return false;
+        if (!userAccesskey.equals(apiUser.userAccesskey)) return false;
+        if (!userSecretkey.equals(apiUser.userSecretkey)) return false;
+        if (!userPublickey.equals(apiUser.userPublickey)) return false;
+        if (!userPrivatekey.equals(apiUser.userPrivatekey)) return false;
+        if (!userLoginIp.equals(apiUser.userLoginIp)) return false;
+        if (!userLoginTime.equals(apiUser.userLoginTime)) return false;
+        if (!createTime.equals(apiUser.createTime)) return false;
+        return updateTime.equals(apiUser.updateTime);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getUserAccount() == null) ? 0 : getUserAccount().hashCode());
-        result = prime * result + ((getUserPassword() == null) ? 0 : getUserPassword().hashCode());
-        result = prime * result + ((getUserName() == null) ? 0 : getUserName().hashCode());
-        result = prime * result + ((getUserEmail() == null) ? 0 : getUserEmail().hashCode());
-        result = prime * result + ((getUserPhone() == null) ? 0 : getUserPhone().hashCode());
-        result = prime * result + ((getUserAvatar() == null) ? 0 : getUserAvatar().hashCode());
-        result = prime * result + ((getUserProfile() == null) ? 0 : getUserProfile().hashCode());
-        result = prime * result + ((getUserRole() == null) ? 0 : getUserRole().hashCode());
-        result = prime * result + ((getUserStatus() == null) ? 0 : getUserStatus().hashCode());
-        result = prime * result + ((getUserAccesskey() == null) ? 0 : getUserAccesskey().hashCode());
-        result = prime * result + ((getUserSecretkey() == null) ? 0 : getUserSecretkey().hashCode());
-        result = prime * result + ((getUserPublickey() == null) ? 0 : getUserPublickey().hashCode());
-        result = prime * result + ((getUserPrivatekey() == null) ? 0 : getUserPrivatekey().hashCode());
-        result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
-        result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
+        int result = id.hashCode();
+        result = 31 * result + userAccount.hashCode();
+        result = 31 * result + userPassword.hashCode();
+        result = 31 * result + userName.hashCode();
+        result = 31 * result + userEmail.hashCode();
+        result = 31 * result + userPhone.hashCode();
+        result = 31 * result + userAvatar.hashCode();
+        result = 31 * result + userProfile.hashCode();
+        result = 31 * result + userRole.hashCode();
+        result = 31 * result + userStatus.hashCode();
+        result = 31 * result + userAccesskey.hashCode();
+        result = 31 * result + userSecretkey.hashCode();
+        result = 31 * result + userPublickey.hashCode();
+        result = 31 * result + userPrivatekey.hashCode();
+        result = 31 * result + userLoginIp.hashCode();
+        result = 31 * result + userLoginTime.hashCode();
+        result = 31 * result + createTime.hashCode();
+        result = 31 * result + updateTime.hashCode();
         return result;
     }
 
@@ -173,6 +179,8 @@ public class ApiUser implements Serializable {
         sb.append(", userSecretkey=").append(userSecretkey);
         sb.append(", userPublickey=").append(userPublickey);
         sb.append(", userPrivatekey=").append(userPrivatekey);
+        sb.append(", userLoginIp=").append(userLoginIp);
+        sb.append(", userLoginTime=").append(userLoginTime);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);

@@ -14,10 +14,12 @@ public class InvokeInterfaceForm implements Serializable {
 
     private static final long serialVersionUID = 287588515633397283L;
 
+    @Schema(description = "接口id")
     private Long id;
 
     /**
      * 用户上送的参数
      */
+    @Schema(description = "用户上送的参数")
     private String userRequestParam;
 }

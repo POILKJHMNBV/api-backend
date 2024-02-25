@@ -30,7 +30,7 @@ public class AuthorizeAspect {
         if (method.isAnnotationPresent(PreAuthorize.class)) {
             String value = method.getAnnotation(PreAuthorize.class).value();
             if (!RoleEnum.ADMIN.getRoleName().equals(value)) {
-                throw new AccessDeniedException(ErrorCode.NO_AUTH_ERROR);
+                throw new AccessDeniedException(ErrorCode.FORBIDDEN_ERROR);
             }
         }
     }
