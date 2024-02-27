@@ -19,5 +19,13 @@ public interface RedisConstants {
      */
     String ROUTE = "route";
 
+    /**
+     * 在线用户key
+     */
     String LOGIN_USER_ACCOUNT = "login:online:";
+
+    /**
+     * 用户操作日志key
+     */
+    String USER_OPERATE_LOG_KEY = "userOperateLog";
 }

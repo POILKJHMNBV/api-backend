@@ -33,6 +33,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public <T> Result<T> runtimeExceptionHandler(RuntimeException e) {
         log.error("runtimeException", e);
-        return Result.failure(ErrorCode.SYSTEM_ERROR.getCode(), e.getMessage());
+        return Result.failure(ErrorCode.SYSTEM_ERROR.getCode(), ErrorCode.SYSTEM_ERROR.getMessage());
     }
 }

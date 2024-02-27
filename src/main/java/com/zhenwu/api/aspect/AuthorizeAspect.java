@@ -4,7 +4,6 @@ import com.zhenwu.api.annotation.PreAuthorize;
 import com.zhenwu.api.common.ErrorCode;
 import com.zhenwu.api.exception.AccessDeniedException;
 import com.zhenwu.api.model.enums.RoleEnum;
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -19,7 +18,6 @@ import java.lang.reflect.Method;
  */
 @Aspect
 @Component
-@Slf4j
 public class AuthorizeAspect {
 
     @Before("execution(public * com.zhenwu.api.controller.*.*(..))")
