@@ -47,7 +47,9 @@ public class WebLogAspect {
         ApiUserOperateLog apiUserOperateLog = new ApiUserOperateLog();
         apiUserOperateLog.setId(this.redisIdWorker.nextId(USER_OPERATE_LOG_KEY));
         LoginUserVO user = UserHolder.getUser();
-        apiUserOperateLog.setUserId(user == null ? 1 : user.getId());
+        if (user != null) {
+            apiUserOperateLog.setUserId(user.getId());
+        }
 
         // 1.获取当前请求对象
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
