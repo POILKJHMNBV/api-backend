@@ -53,7 +53,7 @@ public class AddInterfaceInfoForm implements Serializable {
      * 访问主机
      */
     @NotBlank(message = "访问主机不能为空")
-    @Pattern(regexp = "^(http|https)://[a-zA-Z0-9./?]*$", message = "访问主机内容不正确")
+    @Pattern(regexp = "^(http|https)://[a-zA-Z0-9./?:]*$", message = "访问主机内容不正确")
     @Length(min = 1, max = 256, message = "访问主机长度不可超过256个字符")
     @Schema(description = "访问主机")
     private String interfaceHost;

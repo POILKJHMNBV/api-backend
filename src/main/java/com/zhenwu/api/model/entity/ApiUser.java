@@ -65,7 +65,7 @@ public class ApiUser implements Serializable {
     private Integer userRole;
 
     /**
-     * 用户状态 0-正常 1-已删除
+     * 用户状态 0-正常 1-已删除 2-已禁用
      */
     private Integer userStatus;
 

@@ -28,4 +28,9 @@ public interface RedisConstants {
      * 用户操作日志key
      */
     String USER_OPERATE_LOG_KEY = "userOperateLog";
+
+    /**
+     * 用户调用接口日志key
+     */
+    String USER_INVOKE_LOG_KEY = "userInvokeLog";
 }
