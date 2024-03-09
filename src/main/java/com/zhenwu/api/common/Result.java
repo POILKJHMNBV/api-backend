@@ -26,6 +26,9 @@ public final class Result<T> {
      */
     private String message;
 
+    private final Integer pageSize = 20;
+    private final Integer current = 1;
+
     private Result() {
         this.code = HttpStatus.SC_OK;
         this.message = "success";
@@ -37,7 +40,7 @@ public final class Result<T> {
         this.data = data;
     }
 
-    public Result(int code, String message) {
+    private Result(int code, String message) {
         this.code = code;
         this.message = message;
     }

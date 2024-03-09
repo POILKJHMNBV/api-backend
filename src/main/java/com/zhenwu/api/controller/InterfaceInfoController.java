@@ -1,22 +1,15 @@
 package com.zhenwu.api.controller;
 
-import cn.hutool.core.date.DateField;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.UUID;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhenwu.api.annotation.PreAuthorize;
+import com.zhenwu.api.annotation.WebLog;
 import com.zhenwu.api.common.ErrorCode;
 import com.zhenwu.api.common.Result;
 import com.zhenwu.api.common.UserHolder;
 import com.zhenwu.api.exception.BasicException;
-import com.zhenwu.api.model.dto.interfaceinfo.AddInterfaceInfoForm;
-import com.zhenwu.api.model.dto.interfaceinfo.InvokeInterfaceForm;
-import com.zhenwu.api.model.dto.interfaceinfo.QueryInterfaceInfoForm;
-import com.zhenwu.api.model.dto.interfaceinfo.UpdateInterfaceInfoForm;
+import com.zhenwu.api.model.dto.interfaceinfo.*;
 import com.zhenwu.api.model.entity.ApiInterfaceInfo;
-import com.zhenwu.api.model.enums.RoleEnum;
 import com.zhenwu.api.model.vo.LoginUserVO;
 import com.zhenwu.api.service.ApiInterfaceInfoService;
 import com.zhenwu.sdk.client.ApiClient;
@@ -28,9 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,51 +38,47 @@ public class InterfaceInfoController {
     @PostMapping("/list/page")
     @Operation(summary = "分页查询接口信息")
     public Result<Page<ApiInterfaceInfo>> listInterfaceInfoByPage(@RequestBody @Valid QueryInterfaceInfoForm queryInterfaceInfoForm) {
-        long current = queryInterfaceInfoForm.getCurrent();
-        long size = queryInterfaceInfoForm.getPageSize();
-        Page<ApiInterfaceInfo> page = this.apiInterfaceInfoService.page(new Page<>(current, size), new QueryWrapper<>());
-        page.getRecords().forEach(apiInterfaceInfo -> {
-            Date createTime = apiInterfaceInfo.getCreateTime();
-            apiInterfaceInfo.setCreateTime(DateUtil.offset(createTime, DateField.HOUR_OF_DAY, -8));
-            Date updateTime = apiInterfaceInfo.getUpdateTime();
-            apiInterfaceInfo.setUpdateTime(DateUtil.offset(updateTime, DateField.HOUR_OF_DAY, -8));
-            if (RoleEnum.CUSTOMER.getRoleName().equals(UserHolder.getUser().getUserRole())) {
-                apiInterfaceInfo.setInterfaceVendor(null);
-                apiInterfaceInfo.setInterfaceVendorName(null);
-                apiInterfaceInfo.setInterfaceHost(null);
-                apiInterfaceInfo.setInterfaceRequestParamsMime(null);
-                apiInterfaceInfo.setInterfaceRequestParamsCharset(null);
-                apiInterfaceInfo.setInterfaceRequestMethod(null);
-                apiInterfaceInfo.setInterfacePublishUserid(null);
-                apiInterfaceInfo.setCreateTime(null);
-                apiInterfaceInfo.setUpdateTime(null);
-            }
-        });
-        return Result.success(page);
+        return Result.success(this.apiInterfaceInfoService.listInterfaceInfoByPage(queryInterfaceInfoForm));
     }
 
     @PostMapping("/add")
     @Operation(summary = "添加接口信息")
     @PreAuthorize("admin")
+    @WebLog
     public Result<Long> addInterfaceInfo(@RequestBody @Valid AddInterfaceInfoForm addInterfaceInfoForm) {
         ApiInterfaceInfo interfaceInfo = new ApiInterfaceInfo();
         BeanUtils.copyProperties(addInterfaceInfoForm, interfaceInfo);
         boolean result = this.apiInterfaceInfoService.addApiInterfaceInfo(interfaceInfo);
-        return Result.success(1L);
+        return Result.success(result ? 1L : 0L);
     }
 
     @PutMapping("/update")
     @Operation(summary = "更新接口信息")
     @PreAuthorize("admin")
+    @WebLog
     public Result<Long> updateInterfaceInfo(@RequestBody @Valid UpdateInterfaceInfoForm updateInterfaceInfoForm) {
-        return Result.success();
+        ApiInterfaceInfo interfaceInfo = new ApiInterfaceInfo();
+        BeanUtils.copyProperties(updateInterfaceInfoForm, interfaceInfo);
+        boolean result = this.apiInterfaceInfoService.updateApiInterfaceInfo(interfaceInfo);
+        return Result.success(result ? 1L : 0L);
     }
 
     @DeleteMapping("/delete")
     @Operation(summary = "删除接口信息")
     @PreAuthorize("admin")
-    public Result<Long> deleteInterfaceInfo(@RequestParam("ids") List<Long> ids) {
-        return Result.success();
+    @WebLog
+    public Result<Long> deleteInterfaceInfo(@RequestBody DeleteInterfaceInfoForm deleteInterfaceInfoForm) {
+        if (deleteInterfaceInfoForm == null || deleteInterfaceInfoForm.getIds() == null) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR);
+        }
+        Long[] ids = deleteInterfaceInfoForm.getIds();
+        for (long id : ids) {
+            if (id < 0) {
+                throw new BasicException(ErrorCode.PARAMS_ERROR);
+            }
+        }
+        int result = this.apiInterfaceInfoService.deleteApiInterfaceInfo(ids);
+        return Result.success(result == ids.length ? ids.length : 0L);
     }
 
     /**
@@ -102,14 +88,13 @@ public class InterfaceInfoController {
     @PutMapping("/online/{id}")
     @Operation(summary = "接口上线")
     @PreAuthorize("admin")
+    @WebLog
     public Result<Long> onlineInterfaceInfo(@PathVariable("id") Long id) {
-        // TODO
-        // 1.校验参数
-
-        // 2.判断接口是否存在
-
-        // 3.判断接口是否可以调用
-        return Result.success();
+        if (id == null || id < 0) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR);
+        }
+        boolean result = this.apiInterfaceInfoService.onlineInterfaceInfo(id);
+        return Result.success(result ? 1L : 0L);
     }
 
     /**
@@ -119,9 +104,13 @@ public class InterfaceInfoController {
     @PutMapping("/offline/{id}")
     @Operation(summary = "接口下线")
     @PreAuthorize("admin")
+    @WebLog
     public Result<Long> offlineInterfaceInfo(@PathVariable("id") Long id) {
-        // TODO
-        return Result.success();
+        if (id == null || id < 0) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR);
+        }
+        boolean result = this.apiInterfaceInfoService.offlineInterfaceInfo(id);
+        return Result.success(result ? 1L : 0L);
     }
 
 
@@ -136,7 +125,11 @@ public class InterfaceInfoController {
 
     @PostMapping("/invoke")
     @Operation(summary = "测试调用接口")
+    @WebLog
     public Result<Object> invokeInterface(@RequestBody InvokeInterfaceForm invokeInterfaceForm) {
+        if (invokeInterfaceForm == null || invokeInterfaceForm.getId() == null) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR);
+        }
         // 判断接口是否存在
         ApiInterfaceInfo apiInterfaceInfo = this.apiInterfaceInfoService.getById(invokeInterfaceForm.getId());
         if (apiInterfaceInfo == null) {

@@ -36,6 +36,91 @@
         update_time
     </sql>
 
+    <select id="listInterfaceInfoCount" resultType="long">
+        select count(*) from api_interface_info
+        <where>
+            <if test="interfaceName != null">
+                interface_name like '%${interfaceName}%'
+            </if>
+            <if test="interfaceDescription != null">
+                and interface_description like '%${interfaceDescription}%'
+            </if>
+            <if test="interfaceVendor != null">
+                and interface_vendor like '%${interfaceVendor}%'
+            </if>
+            <if test="interfaceVendorName != null">
+                and interface_vendor_name like '%${interfaceVendorName}%'
+            </if>
+            <if test="interfaceHost != null">
+                and interface_host like '%${interfaceHost}%'
+            </if>
+            <if test="interfacePath != null">
+                and interface_path like '%${interfacePath}%'
+            </if>
+            <if test="interfaceRequestParamsMime != null">
+                and interface_request_params_mime like '%${interfaceRequestParamsMime}%'
+            </if>
+            <if test="interfaceRequestParamsCharset != null">
+                and interface_request_params_charset = #{interfaceRequestParamsCharset}
+            </if>
+            <if test="interfaceStatus != null">
+                and interface_status = #{interfaceStatus}
+            </if>
+            <if test="interfaceRequestMethod != null">
+                and interface_request_method = #{interfaceRequestMethod}
+            </if>
+            <if test="createTime != null">
+                and DATE_FORMAT(create_time, '%Y-%m-%d') = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and DATE_FORMAT(update_time, '%Y-%m-%d') = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="listInterfaceInfoByPage" parameterType="com.zhenwu.api.model.dto.interfaceinfo.QueryInterfaceInfoForm" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from api_interface_info
+        <where>
+            <if test="interfaceName != null">
+                interface_name like '%${interfaceName}%'
+            </if>
+            <if test="interfaceDescription != null">
+                and interface_description like '%${interfaceDescription}%'
+            </if>
+            <if test="interfaceVendor != null">
+                and interface_vendor like '%${interfaceVendor}%'
+            </if>
+            <if test="interfaceVendorName != null">
+                and interface_vendor_name like '%${interfaceVendorName}%'
+            </if>
+            <if test="interfaceHost != null">
+                and interface_host like '%${interfaceHost}%'
+            </if>
+            <if test="interfacePath != null">
+                and interface_path like '%${interfacePath}%'
+            </if>
+            <if test="interfaceRequestParamsMime != null">
+                and interface_request_params_mime like '%${interfaceRequestParamsMime}%'
+            </if>
+            <if test="interfaceRequestParamsCharset != null">
+                and interface_request_params_charset = #{interfaceRequestParamsCharset}
+            </if>
+            <if test="interfaceStatus != null">
+                and interface_status = #{interfaceStatus}
+            </if>
+            <if test="interfaceRequestMethod != null">
+                and interface_request_method = #{interfaceRequestMethod}
+            </if>
+            <if test="createTime != null">
+                and DATE_FORMAT(create_time, '%Y-%m-%d') = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and DATE_FORMAT(update_time, '%Y-%m-%d') = #{updateTime}
+            </if>
+        </where>
+        order by update_time, create_time limit #{start}, #{pageSize}
+    </select>
+
     <select id="queryRouteInfo" resultType="java.util.Map">
         select
             interface_host AS host,
@@ -43,4 +128,12 @@
         from api_interface_info
         group by interface_host
     </select>
+    <update id="deleteInterfaceInfoByIds">
+        update api_interface_info
+        set interface_delete = 0
+        where id in
+        <foreach collection="array" open="(" separator="," close=")"  item="interfaceInfoId">
+            #{interfaceInfoId}
+        </foreach>
+    </update>
 </mapper>

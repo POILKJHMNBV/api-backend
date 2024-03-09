@@ -21,6 +21,11 @@ public class PageRequest {
     private long pageSize = 10;
 
     /**
+     * 查询记录起始位置
+     */
+    private long start;
+
+    /**
      * 排序字段
      */
     private String sortField;
@@ -29,4 +34,8 @@ public class PageRequest {
      * 排序顺序（默认升序）
      */
     private String sortOrder = SORT_ORDER_ASC;
+
+    public void setStart() {
+        this.start = (current - 1) * this.pageSize;
+    }
 }

@@ -1,5 +1,6 @@
 package com.zhenwu.api.aspect;
 
+import com.zhenwu.api.annotation.WebLog;
 import com.zhenwu.api.common.ErrorCode;
 import com.zhenwu.api.common.UserHolder;
 import com.zhenwu.api.exception.BasicException;
@@ -44,6 +45,14 @@ public class WebLogAspect {
     @Around("execution(public * com.zhenwu.api.controller.*.*(..))")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 
+        // 1.获取方法签名
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Method method = methodSignature.getMethod();
+
+        if (!method.isAnnotationPresent(WebLog.class)) {
+            return joinPoint.proceed();
+        }
+
         ApiUserOperateLog apiUserOperateLog = new ApiUserOperateLog();
         apiUserOperateLog.setId(this.redisIdWorker.nextId(USER_OPERATE_LOG_KEY));
         LoginUserVO user = UserHolder.getUser();
@@ -51,16 +60,12 @@ public class WebLogAspect {
             apiUserOperateLog.setUserId(user.getId());
         }
 
-        // 1.获取当前请求对象
+        // 2.获取当前请求对象
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         apiUserOperateLog.setRequestMethod(request.getMethod());
         apiUserOperateLog.setRequestUri(request.getRequestURI().substring(request.getContextPath().length()));
         apiUserOperateLog.setRequestIp(RequestUtil.getRequestIp(request));
-
-        // 2.获取方法签名
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        Method method = methodSignature.getMethod();
 
         // 3.获取API接口信息
         Operation annotation = method.getAnnotation(Operation.class);

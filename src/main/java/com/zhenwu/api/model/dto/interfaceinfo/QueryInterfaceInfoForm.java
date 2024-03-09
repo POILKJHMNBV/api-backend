@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author zhenwu
@@ -18,15 +19,6 @@ import java.io.Serializable;
 public class QueryInterfaceInfoForm extends PageRequest implements Serializable {
 
     private static final long serialVersionUID = 981649889913818629L;
-
-    @Schema(description = "接口id")
-    private Long id;
-
-    /**
-     * 接口token
-     */
-    @Schema(description = "接口token")
-    private String interfaceToken;
 
     /**
      * 接口名称
@@ -82,30 +74,8 @@ public class QueryInterfaceInfoForm extends PageRequest implements Serializable 
     /**
      * 接口请求参数编码格式
      */
-    @Length(max = 10, message = "接口请求参数编码格式长度不可超过10个字符")
     @Schema(description = "接口请求参数编码格式")
-    private String interfaceRequestParamsCharset;
-
-    /**
-     * 接口请求参数
-     */
-    @Length(max = 50000, message = "接口请求参数长度不可超过50000个字符")
-    @Schema(description = "接口请求参数")
-    private String interfaceRequestParams;
-
-    /**
-     * 接口请求头
-     */
-    @Length(max = 50000, message = "接口响应头长度不可超过50000个字符")
-    @Schema(description = "接口响应头")
-    private String interfaceRequestHeader;
-
-    /**
-     * 接口响应头
-     */
-    @Length(max = 50000, message = "接口响应头长度不可超过50000个字符")
-    @Schema(description = "接口响应头")
-    private String interfaceResponseHeader;
+    private Integer interfaceRequestParamsCharset;
 
     /**
      * 接口状态（0-关闭，1-开启）
@@ -116,19 +86,18 @@ public class QueryInterfaceInfoForm extends PageRequest implements Serializable 
     /**
      * 接口请求方法类型
      */
-    @Pattern(regexp = "^[A-Z]{3,10}$", message = "接口请求方法类型内容不正确")
     @Schema(description = "接口请求方法类型")
-    private String interfaceRequestMethod;
+    private Integer interfaceRequestMethod;
 
     /**
-     * 接口发布人
+     * 创建时间
      */
-    @Schema(description = "接口发布人")
-    private Long interfacePublishUserid;
+    @Schema(description = "创建时间")
+    private String createTime;
 
     /**
-     * 接口是否删除(0-已删, 1-未删)
+     * 更新时间
      */
-    @Schema(description = "接口是否删除")
-    private Integer interfaceDelete;
+    @Schema(description = "更新时间")
+    private String updateTime;
 }

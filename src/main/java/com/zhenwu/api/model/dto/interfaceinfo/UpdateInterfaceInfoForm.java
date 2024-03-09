@@ -56,7 +56,7 @@ public class UpdateInterfaceInfoForm implements Serializable {
      * 访问主机
      */
     @NotBlank(message = "访问主机不能为空")
-    @Pattern(regexp = "^(http|https)://[a-zA-Z0-9./?]*$", message = "访问主机内容不正确")
+    @Pattern(regexp = "^(http|https)://[a-zA-Z0-9./?:]*$", message = "访问主机内容不正确")
     @Length(min = 1, max = 256, message = "访问主机长度不可超过256个字符")
     @Schema(description = "访问主机")
     private String interfaceHost;
@@ -80,9 +80,8 @@ public class UpdateInterfaceInfoForm implements Serializable {
     /**
      * 接口请求参数编码格式
      */
-    @Length(max = 10, message = "接口请求参数编码格式长度不可超过10个字符")
     @Schema(description = "接口请求参数编码格式")
-    private String interfaceRequestParamsCharset;
+    private Integer interfaceRequestParamsCharset;
 
     /**
      * 接口请求参数
@@ -109,8 +108,6 @@ public class UpdateInterfaceInfoForm implements Serializable {
     /**
      * 接口请求方法类型
      */
-    @NotBlank(message = "接口请求方法类型不能为空")
-    @Pattern(regexp = "^[A-Z]{3,10}$", message = "接口请求方法类型内容不正确")
     @Schema(description = "接口请求方法类型")
-    private String interfaceRequestMethod;
+    private Integer interfaceRequestMethod;
 }

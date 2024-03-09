@@ -65,9 +65,9 @@ public class ApiInterfaceInfo implements Serializable {
     private String interfaceRequestParamsMime;
 
     /**
-     * 接口请求参数编码格式
+     * 接口请求参数编码格式（0-GBK，1-UTF-8）
      */
-    private String interfaceRequestParamsCharset;
+    private Integer interfaceRequestParamsCharset;
 
     /**
      * 接口请求参数
@@ -90,9 +90,9 @@ public class ApiInterfaceInfo implements Serializable {
     private Integer interfaceStatus;
 
     /**
-     * 接口请求方法类型
+     * 接口请求方法类型（0-GET，1-POST，2-DELETE，3-PUT，4-PATCH）
      */
-    private String interfaceRequestMethod;
+    private Integer interfaceRequestMethod;
 
     /**
      * 接口发布人

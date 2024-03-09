@@ -1,5 +1,6 @@
 package com.zhenwu.api.controller;
 
+import com.zhenwu.api.annotation.WebLog;
 import com.zhenwu.api.common.Result;
 import com.zhenwu.api.common.UserHolder;
 import com.zhenwu.api.model.dto.user.UserLoginForm;
@@ -30,6 +31,7 @@ public class UserController {
 
     @PostMapping("/register")
     @Operation(summary = "用户注册")
+    @WebLog
     public Result<Long> userRegister(@RequestBody @Valid UserRegisterForm userRegisterForm) {
         return Result.success(this.apiUserService.userRegister(userRegisterForm.getUserAccount(),
                 userRegisterForm.getUserPassword(),
@@ -38,6 +40,7 @@ public class UserController {
 
     @PostMapping("/login")
     @Operation(summary = "用户登录")
+    @WebLog
     public Result<String> userLogin(@RequestBody @Valid UserLoginForm userLoginForm, HttpServletRequest request) {
         return Result.success(this.apiUserService.userLogin(userLoginForm.getUserAccount(),
                 userLoginForm.getUserPassword(),
