@@ -1,15 +1,19 @@
 package com.zhenwu.api.service.impl;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.date.DateField;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhenwu.api.common.ErrorCode;
 import com.zhenwu.api.common.UserHolder;
 import com.zhenwu.api.exception.BasicException;
+import com.zhenwu.api.model.dto.user.QueryUserInfoForm;
 import com.zhenwu.api.model.entity.ApiUser;
 import com.zhenwu.api.model.vo.LoginUserVO;
 import com.zhenwu.api.service.ApiUserService;
@@ -26,9 +30,8 @@ import javax.annotation.Resource;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.zhenwu.api.constant.RedisConstants.*;
 
@@ -51,6 +54,7 @@ public class ApiUserServiceImpl extends ServiceImpl<ApiUserMapper, ApiUser>
 
     private static final DefaultRedisScript<Long> LOGIN_SCRIPT;
     private static final DefaultRedisScript<Long> LOGOUT_SCRIPT;
+    private static final DefaultRedisScript<Long> USER_OFFLINE_SCRIPT;
     static {
         LOGIN_SCRIPT = new DefaultRedisScript<>();
         LOGIN_SCRIPT.setLocation(new ClassPathResource("login.lua"));
@@ -59,6 +63,10 @@ public class ApiUserServiceImpl extends ServiceImpl<ApiUserMapper, ApiUser>
         LOGOUT_SCRIPT = new DefaultRedisScript<>();
         LOGOUT_SCRIPT.setLocation(new ClassPathResource("logout.lua"));
         LOGOUT_SCRIPT.setResultType(Long.class);
+
+        USER_OFFLINE_SCRIPT = new DefaultRedisScript<>();
+        USER_OFFLINE_SCRIPT.setLocation(new ClassPathResource("user_offline.lua"));
+        USER_OFFLINE_SCRIPT.setResultType(Long.class);
     }
 
     @Override
@@ -114,6 +122,10 @@ public class ApiUserServiceImpl extends ServiceImpl<ApiUserMapper, ApiUser>
             log.info("user login failed, userAccount cannot match userPassword");
             throw new BasicException(ErrorCode.PARAMS_ERROR, "用户名或密码错误");
         }
+        if (loginUser.getUserStatus() != 0) {
+            log.info("user status error");
+            throw new BasicException(ErrorCode.PARAMS_ERROR, "用户状态异常，请联系管理员");
+        }
 
         boolean updateResult = this.update()
                 .eq("id", loginUser.getId())
@@ -145,5 +157,56 @@ public class ApiUserServiceImpl extends ServiceImpl<ApiUserMapper, ApiUser>
         this.stringRedisTemplate.execute(LOGOUT_SCRIPT,
                 Collections.emptyList(),
                 token, UserHolder.getUser().getUserAccount());
+    }
+
+    @Override
+    public boolean offline(Long[] ids) {
+        List<ApiUser> apiUserList = this.query().select("user_account").in("id", ids).list();
+        List<String> userAccountList = apiUserList.stream().map(ApiUser::getUserAccount).collect(Collectors.toList());
+        int size = userAccountList.size();
+        String[] userAccountArray = new String[size];
+        for (int i = 0; i < size; i++) {
+            userAccountArray[i] = userAccountList.get(i);
+        }
+        Long res = this.stringRedisTemplate.execute(USER_OFFLINE_SCRIPT, Collections.emptyList(), userAccountArray);
+        return res != null && res == 0;
+    }
+
+    @Override
+    public Page<ApiUser> listUserInfoByPage(QueryUserInfoForm queryUserInfoForm) {
+        queryUserInfoForm.setStart();
+        long count = this.apiUserMapper.listUserInfoCount(queryUserInfoForm);
+        List<ApiUser> apiUserList = this.apiUserMapper.listUserInfoByPage(queryUserInfoForm);
+        apiUserList.forEach(apiUser -> {
+            Date createTime = apiUser.getCreateTime();
+            apiUser.setCreateTime(DateUtil.offset(createTime, DateField.HOUR_OF_DAY, -8));
+            Date userLoginTime = apiUser.getUserLoginTime();
+            apiUser.setUserLoginTime(DateUtil.offset(userLoginTime, DateField.HOUR_OF_DAY, -8));
+        });
+        long current = queryUserInfoForm.getCurrent();
+        long pageSize = queryUserInfoForm.getPageSize();
+        Page<ApiUser> page = new Page<>(current, pageSize);
+        page.setTotal(count);
+        page.setRecords(apiUserList);
+        return page;
+    }
+
+    @Override
+    public long deleteUserInfo(Long[] ids) {
+        boolean res = this.update().set("user_status", 1).in("id", ids).update();
+        return res && this.offline(ids) ? ids.length : 0;
+    }
+
+    @Override
+    public boolean forbidUser(long id) {
+        boolean res = this.update().set("user_status", 2).eq("id", id).update();
+        Long[] ids = new Long[1];
+        ids[0] = id;
+        return res && this.offline(ids);
+    }
+
+    @Override
+    public boolean permitUser(long id) {
+        return this.update().set("user_status", 0).eq("id", id).update();
     }
 }

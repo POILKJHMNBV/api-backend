@@ -1,13 +1,11 @@
 package com.zhenwu.api.common;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.apache.http.HttpStatus;
 
 /**
  * @author zhenwu
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 public final class Result<T> {
 

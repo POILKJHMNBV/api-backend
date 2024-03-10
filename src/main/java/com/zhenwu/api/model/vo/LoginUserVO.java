@@ -26,6 +26,11 @@ public class LoginUserVO implements Serializable {
     private String userName;
 
     /**
+     * 用户状态 0-正常 1-已删除 2-已禁用
+     */
+    private Integer userStatus;
+
+    /**
      * 用户邮箱
      */
     private String userEmail;

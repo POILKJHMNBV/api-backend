@@ -72,8 +72,11 @@ public class InterfaceInfoController {
             throw new BasicException(ErrorCode.PARAMS_ERROR);
         }
         Long[] ids = deleteInterfaceInfoForm.getIds();
+        if (ids.length == 0) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR);
+        }
         for (long id : ids) {
-            if (id < 0) {
+            if (id < 1) {
                 throw new BasicException(ErrorCode.PARAMS_ERROR);
             }
         }
@@ -106,7 +109,7 @@ public class InterfaceInfoController {
     @PreAuthorize("admin")
     @WebLog
     public Result<Long> offlineInterfaceInfo(@PathVariable("id") Long id) {
-        if (id == null || id < 0) {
+        if (id == null || id < 1) {
             throw new BasicException(ErrorCode.PARAMS_ERROR);
         }
         boolean result = this.apiInterfaceInfoService.offlineInterfaceInfo(id);
@@ -117,7 +120,7 @@ public class InterfaceInfoController {
     @GetMapping("/info/{id}")
     @Operation(summary = "查询接口详情信息")
     public Result<ApiInterfaceInfo> queryInterfaceInfoById(@PathVariable("id") Long id) {
-        if (id == null || id < 0) {
+        if (id == null || id < 1) {
             throw new BasicException(ErrorCode.PARAMS_ERROR);
         }
         return Result.success(this.apiInterfaceInfoService.getById(id));

@@ -1,10 +1,14 @@
 package com.zhenwu.api.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zhenwu.api.annotation.PreAuthorize;
 import com.zhenwu.api.annotation.WebLog;
+import com.zhenwu.api.common.ErrorCode;
 import com.zhenwu.api.common.Result;
 import com.zhenwu.api.common.UserHolder;
-import com.zhenwu.api.model.dto.user.UserLoginForm;
-import com.zhenwu.api.model.dto.user.UserRegisterForm;
+import com.zhenwu.api.exception.BasicException;
+import com.zhenwu.api.model.dto.user.*;
+import com.zhenwu.api.model.entity.ApiUser;
 import com.zhenwu.api.model.vo.LoginUserVO;
 import com.zhenwu.api.service.ApiUserService;
 import com.zhenwu.api.util.RequestUtil;
@@ -58,5 +62,61 @@ public class UserController {
     public Result<?> logout(HttpServletRequest request) {
         this.apiUserService.logout(request.getHeader("Authorization"));
         return Result.success();
+    }
+
+    @PostMapping("/list/page")
+    @Operation(summary = "分页查询用户信息")
+    @PreAuthorize("admin")
+    public Result<Page<ApiUser>> listUserInfoByPage(@RequestBody @Valid QueryUserInfoForm queryUserInfoForm) {
+        return Result.success(this.apiUserService.listUserInfoByPage(queryUserInfoForm));
+    }
+
+    @DeleteMapping("/delete")
+    @Operation(summary = "删除用户信息")
+    @PreAuthorize("admin")
+    @WebLog
+    public Result<Long> deleteUserInfo(@RequestBody DeleteUserInfoForm deleteUserInfoForm) {
+        if (deleteUserInfoForm == null || deleteUserInfoForm.getIds() == null) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR);
+        }
+        Long[] ids = deleteUserInfoForm.getIds();
+        verifyUserIds(ids);
+        long res = this.apiUserService.deleteUserInfo(ids);
+        return Result.success(res == ids.length ? ids.length : 0L);
+    }
+
+    @PutMapping("/forbid/{id}")
+    @Operation(summary = "禁用用户")
+    @PreAuthorize("admin")
+    @WebLog
+    public Result<Long> forbidUser(@PathVariable("id") Long id) {
+        if (id == null || id < 1) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR);
+        }
+        boolean res = this.apiUserService.forbidUser(id);
+        return Result.success(res ? 1L : 0L);
+    }
+
+    @PutMapping("/permit/{id}")
+    @Operation(summary = "启用用户")
+    @PreAuthorize("admin")
+    @WebLog
+    public Result<Long> permitUser(@PathVariable("id") Long id) {
+        if (id == null || id < 1) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR);
+        }
+        boolean res = this.apiUserService.permitUser(id);
+        return Result.success(res ? 1L : 0L);
+    }
+
+    private void verifyUserIds(Long[] ids) {
+        if (ids.length == 0) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR);
+        }
+        for (long id : ids) {
+            if (id < 1) {
+                throw new BasicException(ErrorCode.PARAMS_ERROR);
+            }
+        }
     }
 }

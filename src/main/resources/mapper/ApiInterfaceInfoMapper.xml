@@ -36,7 +36,7 @@
         update_time
     </sql>
 
-    <select id="listInterfaceInfoCount" resultType="long">
+    <select id="listInterfaceInfoCount" parameterType="com.zhenwu.api.model.dto.interfaceinfo.QueryInterfaceInfoForm" resultType="long">
         select count(*) from api_interface_info
         <where>
             <if test="interfaceName != null">

@@ -38,6 +38,7 @@
         select id,
                user_account,
                user_name,
+               user_status,
                user_email,
                user_phone,
                user_avatar,
@@ -50,5 +51,84 @@
         where
             user_account = #{userAccount}
             and user_password = #{userPassword}
+    </select>
+
+    <select id="listUserInfoCount" parameterType="com.zhenwu.api.model.dto.user.QueryUserInfoForm" resultType="long">
+        select count(*) from api_user
+        <where>
+            user_role != 1
+            <if test="userAccount != null">
+                and user_account like '%${userAccount}%'
+            </if>
+            <if test="userName != null">
+                and user_name like '%${userName}%'
+            </if>
+            <if test="userEmail != null">
+                and user_email like '%${userEmail}%'
+            </if>
+            <if test="userPhone != null">
+                and user_phone like '%${userPhone}%'
+            </if>
+            <choose>
+                <when test="userStatus != null">
+                    and user_status = #{userStatus}
+                </when>
+                <otherwise>
+                    and user_status != 1
+                </otherwise>
+            </choose>
+            <if test="userLoginIp != null">
+                and user_login_ip like '%${userLoginIp}%'
+            </if>
+            <if test="userLoginIp != null">
+                and user_login_ip like '%${userLoginIp}%'
+            </if>
+            <if test="createTime != null">
+                and DATE_FORMAT(create_time, '%Y-%m-%d') = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and DATE_FORMAT(update_time, '%Y-%m-%d') = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="listUserInfoByPage" parameterType="com.zhenwu.api.model.dto.user.QueryUserInfoForm" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from api_user
+        <where>
+            user_role != 1
+            <if test="userAccount != null">
+                and user_account like '%${userAccount}%'
+            </if>
+            <if test="userName != null">
+                and user_name like '%${userName}%'
+            </if>
+            <if test="userEmail != null">
+                and user_email like '%${userEmail}%'
+            </if>
+            <if test="userPhone != null">
+                and user_phone like '%${userPhone}%'
+            </if>
+            <choose>
+                <when test="userStatus != null">
+                    and user_status = #{userStatus}
+                </when>
+                <otherwise>
+                    and user_status != 1
+                </otherwise>
+            </choose>
+            <if test="userLoginIp != null">
+                and user_login_ip like '%${userLoginIp}%'
+            </if>
+            <if test="userLoginIp != null">
+                and user_login_ip like '%${userLoginIp}%'
+            </if>
+            <if test="createTime != null">
+                and DATE_FORMAT(create_time, '%Y-%m-%d') = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and DATE_FORMAT(update_time, '%Y-%m-%d') = #{updateTime}
+            </if>
+        </where>
+        order by update_time, create_time limit #{start}, #{pageSize}
     </select>
 </mapper>
