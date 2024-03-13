@@ -118,7 +118,7 @@
                 and DATE_FORMAT(update_time, '%Y-%m-%d') = #{updateTime}
             </if>
         </where>
-        order by update_time, create_time limit #{start}, #{pageSize}
+        order by update_time desc, create_time desc limit #{start}, #{pageSize}
     </select>
 
     <select id="queryRouteInfo" resultType="java.util.Map">

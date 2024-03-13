@@ -21,4 +21,12 @@
         request_ip,request_parameter,response_status,
         cost_time,error_reason,create_time
     </sql>
+
+    <select id="queryInterfaceInvokeTop5" resultType="com.zhenwu.api.model.vo.InterfaceAnalysisVo">
+        select
+               i.interface_name as interfaceName,
+               count(user_id) as invokeNum
+        from api_user_invoke_log l join api_interface_info i on l.interface_info_id = i.id
+        group by interface_info_id order by invokeNum desc limit 5
+    </select>
 </mapper>
