@@ -39,7 +39,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 "/favicon.ico",
                 "/error",
                 "/user/register",
-                "/user/login"
+                "/user/login",
+                "/user/getVerificationCode"
         ).order(1);
         registry.addInterceptor(new RefreshTokenInterceptor(this.stringRedisTemplate)).addPathPatterns("/**").order(0);
     }

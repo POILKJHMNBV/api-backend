@@ -33,11 +33,26 @@ public class UserController {
     @Resource
     private ApiUserService apiUserService;
 
+    @GetMapping("/getVerificationCode")
+    @Operation(summary = "获取验证码")
+    public Result<String> getVerificationCode(@RequestParam("userAccount") String userAccount,
+                                              @RequestParam("operate") Integer operate) {
+        String userAccountPattern = "^[a-zA-Z0-9]{2,20}$";
+        if (!userAccount.matches(userAccountPattern)) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR, "用户名内容不正确");
+        }
+        if (operate == null || (operate != 0 && operate != 1)) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR);
+        }
+        return Result.success(this.apiUserService.generateVerificationCode(userAccount, operate));
+    }
+
     @PostMapping("/register")
     @Operation(summary = "用户注册")
     @WebLog
     public Result<Long> userRegister(@RequestBody @Valid UserRegisterForm userRegisterForm) {
-        return Result.success(this.apiUserService.userRegister(userRegisterForm.getUserAccount(),
+        return Result.success(this.apiUserService.userRegister(userRegisterForm.getVerificationCode(),
+                userRegisterForm.getUserAccount(),
                 userRegisterForm.getUserPassword(),
                 userRegisterForm.getCheckPassword()));
     }
@@ -46,7 +61,8 @@ public class UserController {
     @Operation(summary = "用户登录")
     @WebLog
     public Result<String> userLogin(@RequestBody @Valid UserLoginForm userLoginForm, HttpServletRequest request) {
-        return Result.success(this.apiUserService.userLogin(userLoginForm.getUserAccount(),
+        return Result.success(this.apiUserService.userLogin(userLoginForm.getVerificationCode(),
+                userLoginForm.getUserAccount(),
                 userLoginForm.getUserPassword(),
                 RequestUtil.getRequestIp(request)));
     }

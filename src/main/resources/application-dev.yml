@@ -45,8 +45,3 @@ dubbo:
     timeout: 60000
     parameters:
       blockUntilConnectedWait: 250
-
-api:
-  client:
-    accessKey: 2144523
-    secretKey: 3242525

@@ -4,6 +4,8 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
@@ -31,6 +33,7 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.zhenwu.api.constant.RedisConstants.*;
@@ -70,13 +73,32 @@ public class ApiUserServiceImpl extends ServiceImpl<ApiUserMapper, ApiUser>
     }
 
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkPassword) {
-        // 1.密码和校验密码相同
+    public String generateVerificationCode(String userAccount, int operate) {
+        String key = operate == 0 ? REGISTER_VERIFICATION_CODE_KEY + userAccount :
+                LOGIN_VERIFICATION_CODE_KEY + userAccount;
+
+        // 1.判断验证码是否已经存在
+        if (Boolean.TRUE.equals(this.stringRedisTemplate.hasKey(key))) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR, "验证码已发送, 请勿重复操作");
+        }
+
+        // 2.生成验证码
+        String verificationCode = RandomUtil.randomString(4);
+        this.stringRedisTemplate.opsForValue().set(key, verificationCode, VERIFICATION_CODE_TTL, TimeUnit.SECONDS);
+        return verificationCode;
+    }
+
+    @Override
+    public long userRegister(String verificationCode, String userAccount, String userPassword, String checkPassword) {
+        // 1.校验验证码
+        this.verifyVerificationCode(verificationCode, REGISTER_VERIFICATION_CODE_KEY + userAccount);
+
+        // 2.密码和校验密码相同
         if (!userPassword.equals(checkPassword)) {
             throw new BasicException(ErrorCode.PARAMS_ERROR, "两次输入的密码不一致");
         }
 
-        // 2.用户注册
+        // 3.用户注册
         synchronized (userAccount.intern()) {
             // 判断账户是否已经存在
             QueryWrapper<ApiUser> queryWrapper = new QueryWrapper<>();
@@ -111,8 +133,28 @@ public class ApiUserServiceImpl extends ServiceImpl<ApiUserMapper, ApiUser>
         }
     }
 
+    /**
+     * 校验验证码
+     * @param verificationCode 验证码
+     * @param key 验证码 key
+     */
+    private void verifyVerificationCode(String verificationCode, String key) {
+        String currentVerificationCode = this.stringRedisTemplate.opsForValue().get(key);
+        if (StrUtil.isEmpty(currentVerificationCode)) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR, "验证码已经失效, 请重新发送");
+        }
+        if (!currentVerificationCode.equals(verificationCode)) {
+            throw new BasicException(ErrorCode.PARAMS_ERROR, "验证码错误");
+        }
+        this.stringRedisTemplate.delete(key);
+    }
+
     @Override
-    public String userLogin(String userAccount, String userPassword, String userLoginIp) {
+    public String userLogin(String verificationCode, String userAccount, String userPassword, String userLoginIp) {
+
+        // 校验验证码
+        this.verifyVerificationCode(verificationCode, LOGIN_VERIFICATION_CODE_KEY + userAccount);
+
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userAccount + userPassword).getBytes());
         Map<String, String> paramMap = new HashMap<>(2);
         paramMap.put("userAccount", userAccount);

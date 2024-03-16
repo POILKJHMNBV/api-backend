@@ -33,4 +33,29 @@ public interface RedisConstants {
      * 用户调用接口日志key
      */
     String USER_INVOKE_LOG_KEY = "userInvokeLog";
+
+    /**
+     * 登录验证码前缀
+     */
+    String LOGIN_VERIFICATION_CODE_KEY = "login:verificationCode:";
+
+    /**
+     * 注册验证码前缀
+     */
+    String REGISTER_VERIFICATION_CODE_KEY = "register:verificationCode:";
+
+    /**
+     * 用户验证码默认有效时间，单位：秒
+     */
+    Long VERIFICATION_CODE_TTL = 60L;
+
+    /**
+     * 黑名单IP Key
+     */
+    String BLACKLIST_IP = "blacklistIp";
+
+    /**
+     * 黑名单 IP 禁用时间
+     */
+    Long BLACKLIST_IP_PROHIBIT_TTL = 36000L;
 }

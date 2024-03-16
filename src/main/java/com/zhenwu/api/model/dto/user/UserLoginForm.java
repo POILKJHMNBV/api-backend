@@ -31,4 +31,12 @@ public class UserLoginForm implements Serializable {
     @Pattern(regexp = "^[a-zA-Z0-9]{6,20}$", message = "密码内容不正确")
     @Schema(description = "密码")
     private String userPassword;
+
+    /**
+     * 验证码
+     */
+    @NotBlank(message = "验证码不能为空")
+    @Pattern(regexp = "^[a-z0-9]{4}$", message = "验证码内容不正确")
+    @Schema(description = "验证码")
+    private String verificationCode;
 }

@@ -24,9 +24,6 @@ public final class Result<T> {
      */
     private String message;
 
-    private final Integer pageSize = 20;
-    private final Integer current = 1;
-
     private Result() {
         this.code = HttpStatus.SC_OK;
         this.message = "success";

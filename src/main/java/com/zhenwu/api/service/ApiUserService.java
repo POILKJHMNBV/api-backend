@@ -12,22 +12,32 @@ import com.zhenwu.api.model.entity.ApiUser;
 public interface ApiUserService extends IService<ApiUser> {
 
     /**
+     * 生成验证码
+     * @param userAccount 用户账户
+     * @param operate   操作 0-用户注册     1-用户登录
+     * @return 验证码
+     */
+    String generateVerificationCode(String userAccount, int operate);
+
+    /**
      * 用户注册
+     * @param verificationCode 验证码
      * @param userAccount   用户账户
      * @param userPassword  用户密码
      * @param checkPassword 校验密码
      * @return 新用户 id
      */
-    long userRegister(String userAccount, String userPassword, String checkPassword);
+    long userRegister(String verificationCode, String userAccount, String userPassword, String checkPassword);
 
     /**
      * 用户登录
+     * @param verificationCode 验证码
      * @param userAccount   用户账户
      * @param userPassword  用户密码
      * @param userLoginIp 用户登录ip
      * @return token
      */
-    String userLogin(String userAccount, String userPassword, String userLoginIp);
+    String userLogin(String verificationCode, String userAccount, String userPassword, String userLoginIp);
 
     /**
      * 退出登录
