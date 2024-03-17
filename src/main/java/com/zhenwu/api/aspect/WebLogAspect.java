@@ -11,10 +11,11 @@ import com.zhenwu.api.util.RedisIdWorker;
 import com.zhenwu.api.util.RequestUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -36,13 +37,34 @@ import static com.zhenwu.api.constant.RedisConstants.USER_OPERATE_LOG_KEY;
 @Slf4j
 public class WebLogAspect {
 
+    private static final String USER = "user";
+
+    private static final String REQUEST_METHOD = "requestMethod";
+
     @Resource
     private RedisIdWorker redisIdWorker;
 
     @Resource
     private ApiUserOperateLogService apiUserOperateLogService;
 
-    @Around("execution(public * com.zhenwu.api.controller.*.*(..))")
+    @Pointcut("execution(public * com.zhenwu.api.controller.*.*(..))")
+    public void controllerCall() {
+    }
+
+    @Before("controllerCall()")
+    public void before(JoinPoint joinPoint) {
+        MDC.put(REQUEST_METHOD, joinPoint.getSignature().getName());
+        if (UserHolder.getUser() != null) {
+            MDC.put(USER, UserHolder.getUser().getUserAccount());
+        }
+    }
+
+    @AfterReturning(returning = "req", pointcut = "controllerCall()")
+    public void afterReturning(JoinPoint jp, Object req) throws Exception {
+        MDC.remove(USER);
+    }
+
+    @Around("controllerCall()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 
         // 1.获取方法签名
