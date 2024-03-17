@@ -54,24 +54,42 @@ public class ApiInterfaceInfoServiceImpl extends ServiceImpl<ApiInterfaceInfoMap
         page.setRecords(interfaceInfoList);
         page.setTotal(count);
 
-        page.getRecords().forEach(apiInterfaceInfo -> {
-            Date createTime = apiInterfaceInfo.getCreateTime();
-            apiInterfaceInfo.setCreateTime(DateUtil.offset(createTime, DateField.HOUR_OF_DAY, -8));
-            Date updateTime = apiInterfaceInfo.getUpdateTime();
-            apiInterfaceInfo.setUpdateTime(DateUtil.offset(updateTime, DateField.HOUR_OF_DAY, -8));
-            if (RoleEnum.CUSTOMER.getRoleName().equals(UserHolder.getUser().getUserRole())) {
-                apiInterfaceInfo.setInterfaceVendor(null);
-                apiInterfaceInfo.setInterfaceVendorName(null);
-                apiInterfaceInfo.setInterfaceHost(null);
-                apiInterfaceInfo.setInterfaceRequestParamsMime(null);
-                apiInterfaceInfo.setInterfaceRequestParamsCharset(null);
-                apiInterfaceInfo.setInterfaceRequestMethod(null);
-                apiInterfaceInfo.setInterfacePublishUserid(null);
-                apiInterfaceInfo.setCreateTime(null);
-                apiInterfaceInfo.setUpdateTime(null);
-            }
-        });
+        page.getRecords().forEach(this::filterSensitiveInformation);
         return page;
+    }
+
+    private void filterSensitiveInformation(ApiInterfaceInfo apiInterfaceInfo) {
+        Date createTime = apiInterfaceInfo.getCreateTime();
+        apiInterfaceInfo.setCreateTime(DateUtil.offset(createTime, DateField.HOUR_OF_DAY, -8));
+        Date updateTime = apiInterfaceInfo.getUpdateTime();
+        apiInterfaceInfo.setUpdateTime(DateUtil.offset(updateTime, DateField.HOUR_OF_DAY, -8));
+        if (RoleEnum.ADMIN.getRoleName().equals(UserHolder.getUser().getUserRole())) {
+            String interfaceVendor = apiInterfaceInfo.getInterfaceVendor();
+            apiInterfaceInfo.setInterfacePath(apiInterfaceInfo.getInterfacePath().substring(interfaceVendor.length() + 1));
+        }
+        if (RoleEnum.CUSTOMER.getRoleName().equals(UserHolder.getUser().getUserRole())) {
+            apiInterfaceInfo.setInterfaceVendor(null);
+            apiInterfaceInfo.setInterfaceVendorName(null);
+            apiInterfaceInfo.setInterfaceHost(null);
+            apiInterfaceInfo.setInterfaceRequestParamsMime(null);
+            apiInterfaceInfo.setInterfaceRequestParamsCharset(null);
+            apiInterfaceInfo.setInterfaceRequestHeader(null);
+            apiInterfaceInfo.setInterfaceResponseHeader(null);
+            apiInterfaceInfo.setInterfaceStatus(null);
+            apiInterfaceInfo.setInterfaceRequestMethod(null);
+            apiInterfaceInfo.setInterfacePublishUserid(null);
+            apiInterfaceInfo.setInterfaceDelete(null);
+            apiInterfaceInfo.setCreateTime(null);
+            apiInterfaceInfo.setUpdateTime(null);
+
+        }
+    }
+
+    @Override
+    public ApiInterfaceInfo queryInterfaceInfoById(long id) {
+        ApiInterfaceInfo apiInterfaceInfo = this.getById(id);
+        this.filterSensitiveInformation(apiInterfaceInfo);
+        return apiInterfaceInfo;
     }
 
     @Override

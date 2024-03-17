@@ -123,7 +123,7 @@ public class InterfaceInfoController {
         if (id == null || id < 1) {
             throw new BasicException(ErrorCode.PARAMS_ERROR);
         }
-        return Result.success(this.apiInterfaceInfoService.getById(id));
+        return Result.success(this.apiInterfaceInfoService.queryInterfaceInfoById(id));
     }
 
     @PostMapping("/invoke")

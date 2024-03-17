@@ -21,6 +21,13 @@ public interface ApiInterfaceInfoService extends IService<ApiInterfaceInfo> {
     Page<ApiInterfaceInfo> listInterfaceInfoByPage(QueryInterfaceInfoForm queryInterfaceInfoForm);
 
     /**
+     * 查询接口详情信息
+     * @param id 接口id
+     * @return 接口详情信息
+     */
+    ApiInterfaceInfo queryInterfaceInfoById(long id);
+
+    /**
      * 添加接口信息
      * @param apiInterfaceInfo 待添加的接口信息
      * @return 接口信息是否添加成功
