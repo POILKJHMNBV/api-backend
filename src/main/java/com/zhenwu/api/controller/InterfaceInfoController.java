@@ -139,7 +139,7 @@ public class InterfaceInfoController {
             throw new BasicException(ErrorCode.NOT_FOUND_ERROR);
         }
         if (0 == apiInterfaceInfo.getInterfaceStatus() || 0 == apiInterfaceInfo.getInterfaceDelete()) {
-            throw new BasicException(ErrorCode.PARAMS_ERROR);
+            throw new BasicException(ErrorCode.PARAMS_ERROR, "接口状态异常");
         }
         LoginUserVO currentUser = UserHolder.getUser();
         ApiClient apiClient = new ApiClient(currentUser.getUserAccesskey(), currentUser.getUserSecretkey(), currentUser.getUserPublickey());

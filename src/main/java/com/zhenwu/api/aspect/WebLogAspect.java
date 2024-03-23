@@ -37,7 +37,7 @@ import static com.zhenwu.api.constant.RedisConstants.USER_OPERATE_LOG_KEY;
 @Slf4j
 public class WebLogAspect {
 
-    private static final String USER = "user";
+    private static final String USER_ACCOUNT = "userAccount";
 
     private static final String REQUEST_METHOD = "requestMethod";
 
@@ -55,13 +55,13 @@ public class WebLogAspect {
     public void before(JoinPoint joinPoint) {
         MDC.put(REQUEST_METHOD, joinPoint.getSignature().getName());
         if (UserHolder.getUser() != null) {
-            MDC.put(USER, UserHolder.getUser().getUserAccount());
+            MDC.put(USER_ACCOUNT, UserHolder.getUser().getUserAccount());
         }
     }
 
     @AfterReturning(returning = "req", pointcut = "controllerCall()")
     public void afterReturning(JoinPoint jp, Object req) throws Exception {
-        MDC.remove(USER);
+        MDC.remove(USER_ACCOUNT);
     }
 
     @Around("controllerCall()")
