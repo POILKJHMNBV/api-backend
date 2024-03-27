@@ -90,13 +90,14 @@ public class ApiUserServiceImpl extends ServiceImpl<ApiUserMapper, ApiUser>
 
     @Override
     public long userRegister(String verificationCode, String userAccount, String userPassword, String checkPassword) {
-        // 1.校验验证码
-        this.verifyVerificationCode(verificationCode, REGISTER_VERIFICATION_CODE_KEY + userAccount);
 
-        // 2.密码和校验密码相同
+        // 1.密码和校验密码相同
         if (!userPassword.equals(checkPassword)) {
             throw new BasicException(ErrorCode.PARAMS_ERROR, "两次输入的密码不一致");
         }
+
+        // 2.校验验证码
+        this.verifyVerificationCode(verificationCode, REGISTER_VERIFICATION_CODE_KEY + userAccount);
 
         // 3.用户注册
         synchronized (userAccount.intern()) {
@@ -151,10 +152,6 @@ public class ApiUserServiceImpl extends ServiceImpl<ApiUserMapper, ApiUser>
 
     @Override
     public String userLogin(String verificationCode, String userAccount, String userPassword, String userLoginIp) {
-
-        // 校验验证码
-        this.verifyVerificationCode(verificationCode, LOGIN_VERIFICATION_CODE_KEY + userAccount);
-
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userAccount + userPassword).getBytes());
         Map<String, String> paramMap = new HashMap<>(2);
         paramMap.put("userAccount", userAccount);
@@ -168,6 +165,9 @@ public class ApiUserServiceImpl extends ServiceImpl<ApiUserMapper, ApiUser>
             log.info("user status error");
             throw new BasicException(ErrorCode.PARAMS_ERROR, "用户状态异常，请联系管理员");
         }
+
+        // 校验验证码
+        this.verifyVerificationCode(verificationCode, LOGIN_VERIFICATION_CODE_KEY + userAccount);
 
         boolean updateResult = this.update()
                 .eq("id", loginUser.getId())
