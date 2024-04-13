@@ -8,4 +8,4 @@ API开放平台是一个接口管理平台，管理员可以在后台维护接�
 
 项目演示：
 
-![后台项目功能演示](https://github.com/POILKJHMNBV/api-backend/assets/open-admin.png)
+![后台项目功能演示](https://github.com/POILKJHMNBV/api-backend/tree/master/assets/img/open-admin.png)
