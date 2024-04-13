@@ -18,7 +18,7 @@ API开放平台是一个接口管理平台，管理员可以在后台维护接�
 
 ## 个人中心界面
 ![个人中心界面](https://github.com/POILKJHMNBV/api-backend/assets/90057507/dfa237ea-5235-4914-a835-dedcef127104)
-用户可以在个人中心界面查看自己的公钥，accessKey，secertKey信息。用户只需通过使用API开放平台提供的SDK中配置这些信息以及接口的token信息便可以轻松调用API开放平台提供的接口。
+用户可以在个人中心界面查看自己的公钥，accessKey，secretKey信息。用户只需通过使用API开放平台提供的SDK中配置这些信息以及接口的token信息便可以轻松调用API开放平台提供的接口。
 
 # 组织结构
 
