@@ -8,9 +8,9 @@ API开放平台是一个接口管理平台，管理员可以在后台维护接�
 
 ## 管理员界面
 ![管理员界面](https://github.com/POILKJHMNBV/api-backend/assets/90057507/14d80e15-14da-414f-b868-ec66f5593637)
-接口管理：维护API开放平台的接口信息
-用户管理：管理API开放平台注册的用户信息
-接口分析：用户调用接口的统计信息
+* 接口管理：维护API开放平台的接口信息
+* 用户管理：管理API开放平台注册的用户信息
+* 接口分析：用户调用接口的统计信息
 
 ## 普通用户界面
 ![普通用户界面](https://github.com/POILKJHMNBV/api-backend/assets/90057507/b95cac36-6cba-4f3d-819f-b6896e0e0d80)
